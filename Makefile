@@ -19,12 +19,12 @@ SRC_OUTPUTS := $(patsubst $(SRC).%.purs,$(OUTPUT)/%/index.js,$(subst /,.,$(SRCS)
 TEST_OUTPUTS := $(patsubst $(TEST).%.purs,$(OUTPUT)/%/index.js,$(subst /,.,$(TESTS)))
 
 define SRC_OUTPUT_RULE
-$(patsubst $(SRC).%.purs,$(OUTPUT)/%/index.js,$(subst /,.,$(1))): $(1)
+$(patsubst $(SRC).%.purs,$(OUTPUT)/%/index.js,$(subst /,.,$(1))): $(1) bower_components
 	$(PSA) compile $(COMPILE_FLAGS) $(DEPENDENCIES) $(SRCS)
 endef
 
 define TEST_OUTPUT_RULE
-$(patsubst $(TEST).%.purs,$(OUTPUT)/%/index.js,$(subst /,.,$(1))): $(1) $(SRC_OUTPUTS)
+$(patsubst $(TEST).%.purs,$(OUTPUT)/%/index.js,$(subst /,.,$(1))): $(1) $(SRC_OUTPUTS) bower_components
 	$(PSA) compile $(COMPILE_FLAGS) $(DEPENDENCIES) $(SRCS) $(TESTS)
 endef
 
