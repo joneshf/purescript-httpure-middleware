@@ -1,5 +1,12 @@
 # Changelog
 
+# Unreleased
+
+## Added
+
+* `developmentLogFormat` - uses a non-standard log format that is more verbose
+    and easier to read
+
 # 1.0.0 - 2019-04-23
 
 Initial release.
