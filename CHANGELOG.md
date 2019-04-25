@@ -2,6 +2,8 @@
 
 # Unreleased
 
+# 1.1.0 - 2019-04-25
+
 ## Added
 
 * `developmentLogFormat` - uses a non-standard log format that is more verbose
