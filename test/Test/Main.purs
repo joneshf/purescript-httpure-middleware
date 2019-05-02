@@ -34,6 +34,16 @@ main = Test.Unit.Main.runTest do
         Test.Unit.Assert.equal originalResponse.headers newResponse.headers
         Test.Unit.Assert.equal originalResponse.status newResponse.status
 
+    Test.Unit.suite "log" do
+      Test.Unit.test "Doesn't alter the request" do
+        originalResponse <- router request
+        newResponse <- HTTPure.Middleware.log logLifecycle router request
+        Test.Unit.Assert.equal originalResponse.headers newResponse.headers
+        Test.Unit.Assert.equal originalResponse.status newResponse.status
+
+logLifecycle :: HTTPure.Middleware.LogLifecycle Unit
+logLifecycle = { after: mempty, before: mempty }
+
 request :: HTTPure.Request
 request =
   { body: "Testing"

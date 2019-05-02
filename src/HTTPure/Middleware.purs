@@ -1,7 +1,11 @@
 module HTTPure.Middleware
-  ( combinedLogFormat
+  ( LogLifecycle
+  , LogTime
+  , combinedLogFormat
   , commonLogFormat
   , developmentLogFormat
+  , log
+  , logWithTime
   ) where
 
 import Prelude
@@ -16,6 +20,7 @@ import Data.Int as Data.Int
 import Data.Maybe as Data.Maybe
 import Data.String as Data.String
 import Data.Time.Duration as Data.Time.Duration
+import Effect.Aff as Effect.Aff
 import Effect.Class as Effect.Class
 import Effect.Class.Console as Effect.Class.Console
 import Effect.Now as Effect.Now
@@ -29,50 +34,51 @@ type Middleware
 -- | A middleware that logs requests in the
 -- | [Combined Log Format](https://httpd.apache.org/docs/trunk/logs.html#combined).
 combinedLogFormat :: Middleware
-combinedLogFormat router request = do
-  now <- Effect.Class.liftEffect Effect.Now.nowDateTime
-  response <- router request
-  let ipAddress = unknown
-      rfc1413 = unknown
-      userId = unknown
-  Effect.Class.Console.log
-    ( Data.String.joinWith
-      " "
-      [ ipAddress
-      , rfc1413
-      , userId
-      , renderDateTime now
-      , renderRequest request
-      , show response.status
-      , renderSize response.headers
-      , renderReferer request
-      , renderUserAgent request
-      ]
-    )
-  pure response
+combinedLogFormat = logWithTime format
+  where
+  format ::
+    LogTime ->
+    HTTPure.Request ->
+    HTTPure.Response ->
+    Effect.Aff.Aff String
+  format now request response =
+    pure
+      ( Data.String.joinWith
+          " "
+          [ commonLogFormat' now request response
+          , renderReferer request
+          , renderUserAgent request
+          ]
+      )
 
 -- | A middleware that logs requests in the
 -- | [Common Log Format](https://httpd.apache.org/docs/trunk/logs.html#common).
 commonLogFormat :: Middleware
-commonLogFormat router request = do
-  now <- Effect.Class.liftEffect Effect.Now.nowDateTime
-  response <- router request
+commonLogFormat = logWithTime format
+  where
+  format ::
+    LogTime ->
+    HTTPure.Request ->
+    HTTPure.Response ->
+    Effect.Aff.Aff String
+  format logTime request response =
+    pure (commonLogFormat' logTime request response)
+
+commonLogFormat' :: LogTime -> HTTPure.Request -> HTTPure.Response -> String
+commonLogFormat' { start } request response = do
   let ipAddress = unknown
       rfc1413 = unknown
       userId = unknown
-  Effect.Class.Console.log
-    ( Data.String.joinWith
-      " "
-      [ ipAddress
-      , rfc1413
-      , userId
-      , renderDateTime now
-      , renderRequest request
-      , show response.status
-      , renderSize response.headers
-      ]
-    )
-  pure response
+  Data.String.joinWith
+    " "
+    [ ipAddress
+    , rfc1413
+    , userId
+    , renderDateTime start
+    , renderRequest request
+    , show response.status
+    , renderSize response.headers
+    ]
 
 colorMethod :: HTTPure.Method -> String
 colorMethod method = Ansi.Output.withGraphics graphics (renderMethod method)
@@ -101,31 +107,31 @@ colorStatus status = Ansi.Output.withGraphics graphics (renderStatus status)
 -- | A middleware that logs request in an unstandardized development format.
 -- | The logs are more verbose, colorful, and a bit easier to read.
 developmentLogFormat :: Middleware
-developmentLogFormat router request = do
-  start <- Effect.Class.liftEffect Effect.Now.nowDateTime
-  response <- router request
-  stop <- Effect.Class.liftEffect Effect.Now.nowDateTime
-  Effect.Class.Console.log
-    ( Data.String.joinWith "\n"
-      ( method
-        <> object "Query" request.query
-        <> body
-        <> object "Headers" headers
-        <> duration stop start
-        <> status response.status
-      )
+developmentLogFormat = logWithTime developmentLogFormat'
+
+developmentLogFormat' ::
+  LogTime ->
+  HTTPure.Request ->
+  HTTPure.Response ->
+  Effect.Aff.Aff String
+developmentLogFormat' logTime request response =
+  pure
+    ( Data.String.joinWith
+        "\n"
+        ( method
+          <> object "Query" request.query
+          <> body
+          <> object "Headers" headers
+          <> duration
+          <> status response.status
+        )
     )
-  pure response
   where
   body
     | hasBody request.method = ["  " <> white "Body" <> ": " <> request.body]
     | otherwise = []
-  duration stop start =
-    [ "  "
-      <> white "Duration"
-      <> ": "
-      <> renderDuration (Data.DateTime.diff stop start)
-    ]
+  duration =
+    ["  " <> white "Duration" <> ": " <> renderDuration logTime.duration]
   method =
     [colorMethod request.method <> " /" <> Data.String.joinWith "/" request.path]
   object name obj
@@ -144,6 +150,48 @@ hasBody = case _ of
   HTTPure.Post -> true
   HTTPure.Put -> true
   _ -> false
+
+-- | The lifecycle functions around logging.
+-- |
+-- | Used to prepare metadata for the logs.
+type LogLifecycle a
+  = { after :: a -> HTTPure.Request -> HTTPure.Response -> Effect.Aff.Aff String
+    , before :: HTTPure.Request -> Effect.Aff.Aff a
+    }
+
+-- | A helper that encapsulates the different information around request time.
+type LogTime
+  = { duration :: Data.Time.Duration.Milliseconds
+    , start :: Data.DateTime.DateTime
+    , stop :: Data.DateTime.DateTime
+    }
+
+-- | Logs the request given the lifecycle functions.
+log :: forall a. LogLifecycle a -> Middleware
+log config router request = do
+  before <- config.before request
+  response <- router request
+  str <- config.after before request response
+  Effect.Class.Console.log str
+  pure response
+
+-- | Helper for logging when all you need is the time metadata.
+logWithTime ::
+  (LogTime -> HTTPure.Request -> HTTPure.Response -> Effect.Aff.Aff String) ->
+  Middleware
+logWithTime format = log { after, before }
+  where
+  after ::
+    Data.DateTime.DateTime ->
+    HTTPure.Request ->
+    HTTPure.Response ->
+    Effect.Aff.Aff String
+  after start request response = do
+    stop <- Effect.Class.liftEffect Effect.Now.nowDateTime
+    let duration = Data.DateTime.diff stop start
+    format { duration, start, stop } request response
+  before :: HTTPure.Request -> Effect.Aff.Aff Data.DateTime.DateTime
+  before _ = Effect.Class.liftEffect Effect.Now.nowDateTime
 
 renderDateTime :: Data.DateTime.DateTime -> String
 renderDateTime =
