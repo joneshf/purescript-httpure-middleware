@@ -1,17 +1,20 @@
 module HTTPure.Middleware
   ( LogLifecycle
   , LogTime
+  , Middleware
   , combinedLogFormat
   , commonLogFormat
   , developmentLogFormat
   , log
   , logWithTime
+  , timeout
   ) where
 
 import Prelude
 
 import Ansi.Codes as Ansi.Codes
 import Ansi.Output as Ansi.Output
+import Control.Parallel as Control.Parallel
 import Data.Array as Data.Array
 import Data.DateTime as Data.DateTime
 import Data.FoldableWithIndex as Data.FoldableWithIndex
@@ -28,6 +31,7 @@ import Foreign.Object as Foreign.Object
 import HTTPure as HTTPure
 import HTTPure.Headers as HTTPure.Headers
 
+-- | A helper for cleaning up type signatures.
 type Middleware
   = (HTTPure.Request -> HTTPure.ResponseM) -> HTTPure.Request -> HTTPure.ResponseM
 
@@ -324,6 +328,21 @@ renderStatus status = show status <> " " <> human
 
 renderUserAgent :: HTTPure.Request -> String
 renderUserAgent { headers } = show (HTTPure.at headers "User-Agent")
+
+-- | A middleware that prevents requests from running for too long.
+-- |
+-- | If a request takes longer than the duration specified,
+-- | it returns a 500 status code
+timeout :: forall a. Data.Time.Duration.Duration a => a -> Middleware
+timeout duration router request =
+  Control.Parallel.parOneOf
+    [ router request
+    , timeout'
+    ]
+  where
+  timeout' = do
+    Effect.Aff.delay (Data.Time.Duration.convertDuration duration)
+    HTTPure.internalServerError "Connection timeout"
 
 unknown :: String
 unknown = "-"

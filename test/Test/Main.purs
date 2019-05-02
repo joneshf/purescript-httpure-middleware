@@ -2,7 +2,9 @@ module Test.Main where
 
 import Prelude
 
+import Data.Time.Duration as Data.Time.Duration
 import Effect as Effect
+import Effect.Aff as Effect.Aff
 import Foreign.Object as Foreign.Object
 import HTTPure as HTTPure
 import HTTPure.Middleware as HTTPure.Middleware
@@ -41,6 +43,17 @@ main = Test.Unit.Main.runTest do
         Test.Unit.Assert.equal originalResponse.headers newResponse.headers
         Test.Unit.Assert.equal originalResponse.status newResponse.status
 
+    Test.Unit.suite "timeout" do
+      Test.Unit.test "Doesn't alter the request if it completes quickly" do
+        originalResponse <- router request
+        newResponse <- timeout router request
+        Test.Unit.Assert.equal originalResponse.headers newResponse.headers
+        Test.Unit.Assert.equal originalResponse.status newResponse.status
+
+      Test.Unit.test "Aborts the request if it takes too long" do
+        response <- timeout slowRouter request
+        Test.Unit.Assert.equal 500 response.status
+
 logLifecycle :: HTTPure.Middleware.LogLifecycle Unit
 logLifecycle = { after: mempty, before: mempty }
 
@@ -55,3 +68,11 @@ request =
 
 router :: HTTPure.Request -> HTTPure.ResponseM
 router _ = HTTPure.notFound' (HTTPure.header "content-length" "0")
+
+slowRouter :: HTTPure.Request -> HTTPure.ResponseM
+slowRouter _ = do
+  Effect.Aff.delay (Data.Time.Duration.Milliseconds 1000.0)
+  HTTPure.noContent
+
+timeout :: HTTPure.Middleware.Middleware
+timeout = HTTPure.Middleware.timeout (Data.Time.Duration.Milliseconds 100.0)

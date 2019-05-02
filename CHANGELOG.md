@@ -6,8 +6,10 @@
 
 * `HTTPure.Middleware.LogLifecycle` - codifies lifecycle functions for logging
 * `HTTPure.Middleware.LogTime` - codifies time data around a request
+* `HTTPure.Middleware.Middleware` - a type synonym for middlewares
 * `HTTPure.Middleware.log` - generalizes the previous log middlewares to allow any output
 * `HTTPure.Middleware.logWithTime` - provides a simplification for logging with time
+* `HTTPure.Middleware.timeout` - aborts requests if they take too long
 
 # 1.1.0 - 2019-04-25
 
