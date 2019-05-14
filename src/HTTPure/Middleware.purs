@@ -168,12 +168,16 @@ type LogTime
 
 -- | Logs the request given the lifecycle functions.
 log :: forall a. LogLifecycle a -> Middleware
-log config router request = do
-  before <- config.before request
-  response <- router request
-  str <- config.after request response before
-  Effect.Class.Console.log str
-  pure response
+log config router request =
+  Effect.Aff.generalBracket
+    (config.before request)
+    { completed: \response before -> do
+       str <- config.after request response before
+       Effect.Class.Console.log str
+    , failed: \error _ -> Effect.Aff.throwError error
+    , killed: \error _ -> Effect.Aff.throwError error
+    }
+    \_ -> router request
 
 -- | Helper for logging when all you need is the time metadata.
 logWithTime ::
