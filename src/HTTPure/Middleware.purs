@@ -155,7 +155,7 @@ hasBody = case _ of
 -- |
 -- | Used to prepare metadata for the logs.
 type LogLifecycle a
-  = { after :: a -> HTTPure.Request -> HTTPure.Response -> Effect.Aff.Aff String
+  = { after :: HTTPure.Request -> HTTPure.Response -> a -> Effect.Aff.Aff String
     , before :: HTTPure.Request -> Effect.Aff.Aff a
     }
 
@@ -171,7 +171,7 @@ log :: forall a. LogLifecycle a -> Middleware
 log config router request = do
   before <- config.before request
   response <- router request
-  str <- config.after before request response
+  str <- config.after request response before
   Effect.Class.Console.log str
   pure response
 
@@ -182,11 +182,11 @@ logWithTime ::
 logWithTime format = log { after, before }
   where
   after ::
-    Data.DateTime.DateTime ->
     HTTPure.Request ->
     HTTPure.Response ->
+    Data.DateTime.DateTime ->
     Effect.Aff.Aff String
-  after start request response = do
+  after request response start = do
     stop <- Effect.Class.liftEffect Effect.Now.nowDateTime
     let duration = Data.DateTime.diff stop start
     format { duration, start, stop } request response
