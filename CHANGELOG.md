@@ -2,6 +2,10 @@
 
 # Unreleased
 
+## Changed
+
+* Bump `purescript-httpure` to `0.9.0` - non-breaking changes should allow this to be a patch version bump
+
 # 3.0.0 - 2019-12-08
 
 ## Changed
