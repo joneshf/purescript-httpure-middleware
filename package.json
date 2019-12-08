@@ -1,6 +1,6 @@
 {
   "name": "purescript-httpure-middleware",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Collection of middlewares for purescript-httpure",
   "main": "index.js",
   "scripts": {
