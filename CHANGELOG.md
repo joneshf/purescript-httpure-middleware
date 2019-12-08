@@ -2,6 +2,8 @@
 
 # Unreleased
 
+# 1.2.0 - 2019-12-08
+
 ## Added
 
 * `HTTPure.Middleware.LogLifecycle` - codifies lifecycle functions for logging
