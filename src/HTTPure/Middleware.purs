@@ -32,6 +32,7 @@ import Effect.Now as Effect.Now
 import Foreign.Object as Foreign.Object
 import HTTPure as HTTPure
 import HTTPure.Headers as HTTPure.Headers
+import HTTPure.Version as HTTPure.Version
 
 -- | A helper for cleaning up type signatures.
 type Middleware
@@ -234,6 +235,15 @@ renderDuration :: Data.Time.Duration.Milliseconds -> String
 renderDuration = case _ of
   Data.Time.Duration.Milliseconds x -> show (Data.Int.round x) <> "ms"
 
+renderHTTPVersion :: HTTPure.Version.Version -> String
+renderHTTPVersion = case _ of
+  HTTPure.Version.HTTP0_9 -> "HTTP/0.9"
+  HTTPure.Version.HTTP1_0 -> "HTTP/1.0"
+  HTTPure.Version.HTTP1_1 -> "HTTP/1.1"
+  HTTPure.Version.HTTP2_0 -> "HTTP/2.0"
+  HTTPure.Version.HTTP3_0 -> "HTTP/3.0"
+  HTTPure.Version.Other version -> version
+
 renderMethod :: HTTPure.Method -> String
 renderMethod = case _ of
   HTTPure.Connect -> "CONNECT"
@@ -250,18 +260,15 @@ renderReferer :: HTTPure.Request -> String
 renderReferer { headers } = show (HTTPure.at headers "Referer")
 
 renderRequest :: HTTPure.Request -> String
-renderRequest { method, path } =
+renderRequest { httpVersion, method, path } =
   show
     ( Data.String.joinWith
       " "
       [ renderMethod method
       , "/" <> Data.String.joinWith "/" path
-      , httpVersion
+      , renderHTTPVersion httpVersion
       ]
     )
-  where
-  httpVersion :: String
-  httpVersion = unknown
 
 renderSize :: HTTPure.Headers -> String
 renderSize headers =
