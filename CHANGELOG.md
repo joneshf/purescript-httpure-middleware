@@ -2,6 +2,10 @@
 
 # Unreleased
 
+## Fixed
+
+* Fixed bower dependencies - transitive dependencies were causing install failures
+
 # 1.2.0 - 2019-12-08
 
 ## Added
