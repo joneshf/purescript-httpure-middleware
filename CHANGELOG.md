@@ -2,6 +2,10 @@
 
 # Unreleased
 
+## Changed
+
+* Render HTTP Version in logs - the version is now available in the request
+
 # 2.0.0 - 2019-12-08
 
 ## Changed
