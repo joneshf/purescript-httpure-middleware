@@ -16,7 +16,7 @@
     "url": "https://github.com/joneshf/purescript-httpure-middleware.git"
   },
   "dependencies": {
-    "purescript-httpure": "^0.8.1",
+    "purescript-httpure": "0.8.1",
     "purescript-now": "^4.0.0",
     "purescript-prelude": "^4.1.1",
     "purescript-effect": "^2.0.1",
