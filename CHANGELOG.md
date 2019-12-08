@@ -2,9 +2,11 @@
 
 # Unreleased
 
+# 2.0.0 - 2019-12-08
+
 ## Changed
 
-* Update `purescript-httpure` to `0.8.2`
+* Update `purescript-httpure` to `0.8.2` - breaking changes require a major version bump
 
 # 1.2.1 - 2019-12-08
 
