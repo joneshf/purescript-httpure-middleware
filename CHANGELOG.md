@@ -2,6 +2,8 @@
 
 # Unreleased
 
+# 2.1.0 - 2019-12-08
+
 ## Changed
 
 * Render HTTP Version in logs - the version is now available in the request
