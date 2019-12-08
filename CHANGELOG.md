@@ -11,6 +11,10 @@
 * `HTTPure.Middleware.logWithTime` - provides a simplification for logging with time
 * `HTTPure.Middleware.timeout` - aborts requests if they take too long
 
+## Fixed
+
+* Lock down `purescript-httpure` version - `purescript-httpure` allows breaking changes in patch versions which conflicts with SemVer caret
+
 # 1.1.0 - 2019-04-25
 
 ## Added
