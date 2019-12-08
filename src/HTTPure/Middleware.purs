@@ -17,11 +17,13 @@ import Ansi.Output as Ansi.Output
 import Control.Parallel as Control.Parallel
 import Data.Array as Data.Array
 import Data.DateTime as Data.DateTime
+import Data.Foldable as Data.Foldable
 import Data.FoldableWithIndex as Data.FoldableWithIndex
 import Data.Formatter.DateTime as Data.Formatter.DateTime
 import Data.Int as Data.Int
 import Data.Maybe as Data.Maybe
 import Data.String as Data.String
+import Data.String.CaseInsensitive as Data.String.CaseInsensitive
 import Data.Time.Duration as Data.Time.Duration
 import Effect.Aff as Effect.Aff
 import Effect.Class as Effect.Class
@@ -125,7 +127,7 @@ developmentLogFormat' logTime request response =
         ( method
           <> object "Query" request.query
           <> body
-          <> object "Headers" headers
+          <> fromHeaders "Headers" headers
           <> duration
           <> status response.status
         )
@@ -136,6 +138,12 @@ developmentLogFormat' logTime request response =
     | otherwise = []
   duration =
     ["  " <> white "Duration" <> ": " <> renderDuration logTime.duration]
+  fromHeaders name obj
+    | not Data.Foldable.null obj =
+      [ "  " <> white name <> ":"
+      ] <> flip Data.FoldableWithIndex.foldMapWithIndex obj \(Data.String.CaseInsensitive.CaseInsensitiveString key) val ->
+        ["    " <> white key <> ": " <> val]
+    | otherwise = []
   method =
     [colorMethod request.method <> " /" <> Data.String.joinWith "/" request.path]
   object name obj

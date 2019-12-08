@@ -8,6 +8,7 @@ import Effect.Aff as Effect.Aff
 import Foreign.Object as Foreign.Object
 import HTTPure as HTTPure
 import HTTPure.Middleware as HTTPure.Middleware
+import HTTPure.Version as HTTPure.Version
 import Test.Unit as Test.Unit
 import Test.Unit.Assert as Test.Unit.Assert
 import Test.Unit.Main as Test.Unit.Main
@@ -61,6 +62,7 @@ request :: HTTPure.Request
 request =
   { body: "Testing"
   , headers: HTTPure.header "Content-Type" "text/plain"
+  , httpVersion: HTTPure.Version.HTTP1_1
   , method: HTTPure.Patch
   , path: ["foo", "bar", "baz.html"]
   , query: Foreign.Object.fromHomogeneous { qux: "gar" }
