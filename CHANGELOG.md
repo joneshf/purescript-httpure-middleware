@@ -2,6 +2,8 @@
 
 # Unreleased
 
+# 3.0.0 - 2019-12-08
+
 ## Changed
 
 * Bump `purescript-httpure` to `0.8.3` - transitive dependencies require a major version bump
