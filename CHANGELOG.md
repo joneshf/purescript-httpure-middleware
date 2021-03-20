@@ -2,6 +2,11 @@
 
 # Unreleased
 
+# 4.0.0 - 2021-03-20
+## Changed
+
+* Bump all dependencies for `purescript` version `0.14.0` - this change is non-breaking, but all the dependcies caused a major bump
+
 # 3.0.2 - 2019-12-08
 
 ## Changed
