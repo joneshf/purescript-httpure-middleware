@@ -16,23 +16,23 @@
     "url": "https://github.com/joneshf/purescript-httpure-middleware.git"
   },
   "dependencies": {
-    "purescript-ansi": ">= 5.0.0 < 6.0.0",
-    "purescript-arrays": ">= 5.2.1 < 6.0.0",
-    "purescript-console": ">= 4.2.0 < 5.0.0",
-    "purescript-effect": ">= 2.0.1 < 3.0.0",
-    "purescript-formatters": ">= 4.0.1 < 5.0.0",
-    "purescript-foreign-object": ">= 1.0.0 < 3.0.0",
-    "purescript-httpure": "0.8.3 || 0.9.0 || 0.10.0",
-    "purescript-integers": ">= 4.0.0 < 5.0.0",
-    "purescript-maybe": ">= 4.0.1 < 5.0.0",
-    "purescript-now": ">= 4.0.0 < 5.0.0",
-    "purescript-options": ">= 4.0.0 < 6.0.0",
-    "purescript-parallel": ">= 4.0.0 < 5.0.0",
-    "purescript-prelude": ">= 4.1.1 < 5.0.0",
-    "purescript-strings": ">= 4.0.1 < 5.0.0"
+    "purescript-ansi": ">= 6.0.0 < 7.0.0",
+    "purescript-arrays": ">= 6.0.0 < 7.0.0",
+    "purescript-console": ">= 5.0.0 < 6.0.0",
+    "purescript-effect": ">= 3.0.0 < 4.0.0",
+    "purescript-formatters": ">= 5.0.0 < 6.0.0",
+    "purescript-foreign-object": ">= 3.0.0 < 4.0.0",
+    "purescript-httpure": "036318aba04b0a2a152895a26d4fe909208f194c",
+    "purescript-integers": ">= 5.0.0 < 6.0.0",
+    "purescript-maybe": ">= 5.0.0 < 6.0.0",
+    "purescript-now": ">= 5.0.0 < 6.0.0",
+    "purescript-options": ">= 6.0.0 < 7.0.0",
+    "purescript-parallel": ">= 5.0.0 < 6.0.0",
+    "purescript-prelude": ">= 5.0.0 < 6.0.0",
+    "purescript-strings": ">= 5.0.0 < 6.0.0"
   },
   "devDependencies": {
-    "purescript-psci-support": ">= 4.0.0 < 5.0.0",
-    "purescript-test-unit": ">= 14.0.0 < 16.0.0"
+    "purescript-psci-support": ">= 5.0.0 < 6.0.0",
+    "purescript-test-unit": ">= 16.0.0 < 17.0.0"
   }
 }
