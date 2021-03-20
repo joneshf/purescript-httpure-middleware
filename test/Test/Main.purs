@@ -66,6 +66,7 @@ request =
   , method: HTTPure.Patch
   , path: ["foo", "bar", "baz.html"]
   , query: Foreign.Object.fromHomogeneous { qux: "gar" }
+  , url: "/foo/bar/baz.html"
   }
 
 router :: HTTPure.Request -> HTTPure.ResponseM
