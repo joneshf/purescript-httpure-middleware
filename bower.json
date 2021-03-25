@@ -22,7 +22,7 @@
     "purescript-effect": ">= 3.0.0 < 4.0.0",
     "purescript-formatters": ">= 5.0.0 < 6.0.0",
     "purescript-foreign-object": ">= 3.0.0 < 4.0.0",
-    "purescript-httpure": "036318aba04b0a2a152895a26d4fe909208f194c",
+    "purescript-httpure": "0.12.0",
     "purescript-integers": ">= 5.0.0 < 6.0.0",
     "purescript-maybe": ">= 5.0.0 < 6.0.0",
     "purescript-now": ">= 5.0.0 < 6.0.0",
