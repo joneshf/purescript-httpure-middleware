@@ -2,6 +2,8 @@
 
 # Unreleased
 
+# 4.0.1 - 2021-03-25
+
 ## Changed
 
 * Bump `purescript-httpure` to `0.12.0` - non-breaking changes should allow this to be a patch version bump
