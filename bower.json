@@ -26,7 +26,6 @@
     "purescript-integers": ">= 5.0.0 < 6.0.0",
     "purescript-maybe": ">= 5.0.0 < 6.0.0",
     "purescript-now": ">= 5.0.0 < 6.0.0",
-    "purescript-options": ">= 6.0.0 < 7.0.0",
     "purescript-parallel": ">= 5.0.0 < 6.0.0",
     "purescript-prelude": ">= 5.0.0 < 6.0.0",
     "purescript-strings": ">= 5.0.0 < 6.0.0"

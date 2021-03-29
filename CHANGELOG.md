@@ -2,6 +2,10 @@
 
 # Unreleased
 
+## Deleted
+
+* Removed `purescript-options` dependency - this was never an explicitly used dependency
+
 # 4.0.1 - 2021-03-25
 
 ## Changed
